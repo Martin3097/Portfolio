@@ -1,0 +1,86 @@
+---------------------------------------------------------------------------------------------------
+integral compuesta
+
+import numpy as np
+
+f = lambda x: x
+b=2;a=1;n=4;
+h=(b-a)/n;
+x=[];
+for i in range(n):
+    x.append(a+(i-1)*h)
+    
+def suma1(x,n):
+    numero=0;
+    for i in range(int(n/2-1)):
+        numero +=f(x[2*i])
+    return numero;
+def suma2(x,n):
+    numero=0;
+    for i in range(int(n/2)):
+        numero +=f(x[2*i-1])
+    return numero
+def integral(a,b,h,n,x):
+    return (h/3)*(f(a)+2*suma1(x,n)+4*suma2(x,n)+f(b))
+
+integral(a,b,h,n,x)
+
+-------------------------------------------------------------------------------------------------------
+spline cubico
+
+from scipy.interpolate import CubicSpline
+import numpy as np
+import matplotlib.pyplot as plt
+
+plt.style.use('seaborn-poster')
+x = [0,1,2]
+y = [0,1,2]
+
+# use bc_type = 'natural' adds the constraints as we described above
+f = CubicSpline(x, y,bc_type='natural')
+x_new = np.linspace(0, 2, 100)
+y_new = f(x_new)
+plt.figure(figsize = (10,8))
+plt.plot(x_new, y_new, 'b')
+plt.plot(x, y, 'ro')
+plt.title('Cubic Spline Interpolation')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.show()
+b = np.array([0, 1, 1, 2, 0, 0, 0, 0])
+b = b[:, np.newaxis]
+A = np.array([[0, 0, 0, 1, 0, 0, 0, 0], [0, 0, 0, 0, 1, 1, 1, 1], [1, 1, 1, 1, 0, 0, 0, 0], \
+             [0, 0, 0, 0, 8, 4, 2, 1], [3, 2, 1, 0, -3, -2, -1, 0], [6, 2, 0, 0, -6, -2, 0, 0],\
+             [0, 2, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 12, 2, 0, 0]])
+np.dot(np.linalg.inv(A), b)
+
+----------------------------------------------------------------------------------------------------------------
+lagrange
+
+import math
+import numpy as np
+import matplotlib.pyplot as plt
+
+#construimos el polinomio de grado 2 que interpola los puntos (2,1/2)...
+
+xi = np.array([2,2.5,4])
+f = 1/xi
+yi = np.array(f)
+
+#polyfit para calcular el polinomio interpolador
+c = np.polyfit(xi,yi,2) #el tercer parametro es el grado del polinomio que necesitamos
+
+#poly1d de Numpy convierte el vector de coeficientes a un dato de tipo polinomio
+p = np.poly1d(c)
+print("Polinomio interpolador",p)
+
+#verificamos que el polinomio obtenido interpola los valores dados
+#polyval para evaluar un polinomio dado en uno o muchos puntos
+x = 3
+print("p(3) =", p(x))
+
+#calculamos el valor real
+print("f(3) =", 1/x)
+
+#calculemos el error real
+print("Error real = ", (1/x) - p(x))

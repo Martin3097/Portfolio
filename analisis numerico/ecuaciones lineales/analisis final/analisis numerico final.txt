@@ -1,0 +1,254 @@
+#metodo de euler
+def f(t,y):
+    return y-t**2+1
+def y(t):
+    return (t+1)**2-0.5*2.7**t
+def MetodoEuler(a,b,n,o):
+    h=(b-a)/n
+    t=a
+    w=o
+    print("ti ","    wi ","          y(ti)  ","      |yi-wi|")
+    for i in range(n+1):
+        i=i+1
+        print(float(t),"   ","{:.7f}".format(w),"   ","{:.7f}".format(y(t)),"   ","{:.7f}".format(abs(y(t)-w)))
+        w=w+h*f(t,w)
+        t=float(round(a+i*h,2))
+MetodoEuler(0,2,10,0.5)
+
+-------------------------------------------------------------------------------------------------------------------------------
+#RungeKutta (orden 4)
+def f(t,y):
+    return y-t**2+1
+def y(t):
+    return (t+1)**2-0.5*2.7**t
+def RungeKutta(a,b,n,o):
+    h=(b-a)/n
+    t=a
+    w=o
+    print("t","   y(t)","     w","        |y(t)-w|")
+    for i in range(n+1):
+        i=i+1
+        print("{:.2f}".format(t),"{:.7f}".format(y(t)),"{:.7f}".format(w),"{:.7f}".format(abs(y(t)-w)))
+        k1=h*f(t,w)
+        k2=h*f(t+h/2,w+k1/2)
+        k3=h*f(t+h/2,w+k2/2)
+        k4=h*f(t+h,w+k3)
+        w=w+(k1+2*k2+2*k3+k4)/6
+        t=a+i*h
+        
+RungeKutta(0,2,10,0.5)
+---------------------------------------------------------------------------------------------------------------------------
+from tabulate import tabulate
+matriz = [[1,1,-1,1,], [1,1,4,2], [2,-1,2,3]]
+n=len(matriz)-1 
+
+def EliminarFila(matriz,n,i):
+     for j in range(i+1,n+1):
+            division=matriz[j][i]/matriz[i][i]
+            print("E",j,"--->E",j,"-",[division],"*E",i)
+            for k in range (n+2):
+                matriz[j][k]=matriz[j][k]-division*matriz[i][k]
+def suma(i,n,m,k):
+    suma=0
+    for j in range(i,n+1):
+        suma=suma+ m[i-1][j]*k[j]
+    return suma
+def cambioMatriz(matriz,n,m,i):
+    x=[];y=[]
+    for j in range (n+1+1):
+        x.append(0)
+    for j in range (n+1+1):
+        y.append(0)
+    for j in range (n+2):
+        x[j]=(matriz[m][j])
+    for j in range (n+2):
+        y[j]=(matriz[i][j])
+    for j in range (n+2):
+        matriz[i][j]=x[j]
+    for j in range (n+2):
+        matriz[m][j]=y[j]
+def gauss(matriz,n):
+    for i in range(n):
+        m=-1
+        print(tabulate(matriz))
+        for p in range(n+1):
+            p=n-p
+            if(i<=p):
+                if(matriz[p][i]!=0):
+                    m=p    
+        if (m==-1):
+            print("no existe solucion unica")
+            return 0
+        if (m!=i):
+            cambioMatriz(matriz,n,i,m)
+            print("E",p,"<----->","E",i)
+            print(tabulate(matriz))
+        EliminarFila(matriz,n,i)
+    print(tabulate(matriz))        
+        #Ej -division*Ei---->Ej
+    if(matriz[n][n]==0):
+        print("no existe solucion unica")
+        return 0
+def solucion(matriz,n):
+    k=[]    
+    for i in range (n+1):
+        k.append(0)
+    k[n]=(matriz[n][n+1]/matriz[n][n])    
+    for i in range(n):
+        i=n-1-i
+        k[i]=(matriz[i][n+1]-suma(i+1,n,matriz,k))/(matriz[i][i])
+    for i in range(n+1):
+        print("x",i,"=",k[i])
+if (gauss(matriz,n)!=0):
+    solucion(matriz,n)
+---------------------------------------------------------------------------------------------------------------------------------------
+from tabulate import tabulate
+matriz = [[1,1,-1,1,], [1,1,4,2], [2,-1,2,3]]
+n=len(matriz)-1 
+
+def EliminarFila(matriz,n,i):
+     for j in range(i+1,n+1):
+            division=matriz[j][i]/matriz[i][i]
+            print("E",j,"--->E",j,"-",[division],"*E",i)
+            for k in range (n+2):
+                matriz[j][k]=matriz[j][k]-division*matriz[i][k]
+def suma(i,n,m,k):
+    suma=0
+    for j in range(i,n+1):
+        suma=suma+ m[i-1][j]*k[j]
+    return suma
+def cambioMatriz(matriz,n,m,i):
+    x=[];y=[]
+    for j in range (n+1+1):
+        x.append(0)
+    for j in range (n+1+1):
+        y.append(0)
+    for j in range (n+2):
+        x[j]=(matriz[m][j])
+    for j in range (n+2):
+        y[j]=(matriz[i][j])
+    for j in range (n+2):
+        matriz[i][j]=x[j]
+    for j in range (n+2):
+        matriz[m][j]=y[j]
+def gaussPivoteoParcial(matriz,n):
+    z=[];
+    for j in range (n+1+1):
+        z.append(0)
+    for i in range(n):
+        a=0;
+        for j in range (n+1+1):
+            z[j]=0
+        print(tabulate(matriz))
+        for j in range(i,n+1):
+            z[j]=abs(matriz[j][i])
+        m=max(z)
+        if (m==0):
+            print("no existe solucion unica")
+            return 0
+        for p in range(n+1):
+            p=n-p
+            if(i<=p):
+                if(matriz[p][i]==m):
+                    a=p
+        if (a!=i):
+            cambioMatriz(matriz,n,i,m)
+            print("E",p,"<----->","E",i)
+            print(tabulate(matriz))
+        EliminarFila(matriz,n,i)
+    print(tabulate(matriz))        
+        #Ej -division*Ei---->Ej
+    if(matriz[n][n]==0):
+        print("no existe solucion unica")
+        return 0
+def solucion(matriz,n):
+    k=[]    
+    for i in range (n+1):
+        k.append(0)
+    k[n]=(matriz[n][n+1]/matriz[n][n])    
+    for i in range(n):
+        i=n-1-i
+        k[i]=(matriz[i][n+1]-suma(i+1,n,matriz,k))/(matriz[i][i])
+    for i in range(n+1):
+        print("x",i,"=",k[i])
+if (gaussPivoteoParcial(matriz,n)!=0):
+    solucion(matriz,n)
+-----------------------------------------------------------------------------------------------------------------------------------------
+from tabulate import tabulate
+matriz = [[2.11,-4.21,0.921,2.01], [4.01,10.2,-1.12,-3.09], [1.09,0.987,0.832,4.21]]
+n=len(matriz)-1 
+
+def EliminarFila(matriz,n,i):
+     for j in range(i+1,n+1):
+            division=matriz[j][i]/matriz[i][i]
+            print("E",j,"--->E",j,"-",[division],"*E",i)
+            for k in range (n+2):
+                matriz[j][k]=matriz[j][k]-division*matriz[i][k]
+
+def maxMAtrizRenglon(renglon,matriz,n):
+    x=[];
+    for j in range (n+1+1):
+        x.append(0)
+    for j in range(n+1):
+        x[j]=abs(matriz[renglon][j])
+    return max(x)
+
+def suma(i,n,m,k):
+    suma=0
+    for j in range(i,n+1):
+        suma=suma+ m[i-1][j]*k[j]
+    return suma
+def cambioMatriz(matriz,n,m,i):
+    x=[];y=[]
+    for j in range (n+1+1):
+        x.append(0)
+    for j in range (n+1+1):
+        y.append(0)
+    for j in range (n+2):
+        x[j]=(matriz[m][j])
+    for j in range (n+2):
+        y[j]=(matriz[i][j])
+    for j in range (n+2):
+        matriz[i][j]=x[j]
+    for j in range (n+2):
+        matriz[m][j]=y[j]
+def gaussPivoteoParcial(matriz,n):
+    z=[];
+    for j in range (n+1+1):
+        z.append(0)
+    for i in range(n):
+        a=0;
+        for j in range (n+1+1):
+            z[j]=0
+        print(tabulate(matriz))
+        for j in range(i,n+1):
+            z[j]=abs(matriz[j][i]/maxMAtrizRenglon(j,matriz,n))
+        m=max(z)
+        for j in range(n+1):
+             if(m==z[j]):
+                a=j
+        if (m==0):
+            print("no existe solucion unica")
+            return 0
+        if (a!=i):
+            cambioMatriz(matriz,n,i,a)
+            print("E",a,"<----->","E",i)
+            print(tabulate(matriz))
+        EliminarFila(matriz,n,i)
+    print(tabulate(matriz))        
+        #Ej -division*Ei---->Ej
+    if(matriz[n][n]==0):
+        print("no existe solucion unica")
+        return 0
+def solucion(matriz,n):
+    k=[]    
+    for i in range (n+1):
+        k.append(0)
+    k[n]=(matriz[n][n+1]/matriz[n][n])    
+    for i in range(n):
+        i=n-1-i
+        k[i]=(matriz[i][n+1]-suma(i+1,n,matriz,k))/(matriz[i][i])
+    for i in range(n+1):
+        print("x",i,"=",k[i])
+if (gaussPivoteoParcial(matriz,n)!=0):
+    solucion(matriz,n)

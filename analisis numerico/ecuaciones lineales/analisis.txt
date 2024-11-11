@@ -1,0 +1,150 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+plt.style.use('seaborn-poster')
+%matplotlib inline
+
+# Define parameters
+f = lambda t, s: np.exp(-t) # ODE
+h = 0.1 # Step size
+t = np.arange(0, 1 + h, h) # Numerical grid
+s0 = -1 # Initial Condition
+
+# Explicit Euler Method
+s = np.zeros(len(t))
+s[0] = s0
+
+for i in range(0, len(t) - 1):
+    s[i + 1] = s[i] + h*f(t[i], s[i])
+
+plt.figure(figsize = (12, 8))
+plt.plot(t, s, 'bo--', label='Approximate')
+plt.plot(t, -np.exp(-t), 'g', label='Exact')
+plt.title('Approximate and Exact Solution \
+for Simple ODE')
+plt.xlabel('t')
+plt.ylabel('f(t)')
+plt.grid()
+plt.legend(loc='lower right')
+plt.show()
+
+h = 0.01 # Step size
+t = np.arange(0, 1 + h, h) # Numerical grid
+s0 = -1 # Initial Condition
+
+# Explicit Euler Method
+s = np.zeros(len(t))
+s[0] = s0
+
+for i in range(0, len(t) - 1):
+    s[i + 1] = s[i] + h*f(t[i], s[i])
+
+plt.figure(figsize = (12, 8))
+plt.plot(t, s, 'b--', label='Approximate')
+plt.plot(t, -np.exp(-t), 'g', label='Exact')
+plt.title('Approximate and Exact Solution \
+for Simple ODE')
+plt.xlabel('t')
+plt.ylabel('f(t)')
+plt.grid()
+plt.legend(loc='lower right')
+plt.show()
+
+def f(t,y):
+    return y-t**2+1
+def y(t):
+    return (t+1)**2-0.5*2.7**t
+def MetodoEuler(a,b,n,o):
+    h=(b-a)/n
+    t=a
+    w=o
+    for i in range(n):
+        i=i+1
+        print(t,"   ",w,"   ",y(t),"   ",abs(y(t)-w))
+        w=w+h*f(t,w)
+        t=a+i*h
+        
+        
+MetodoEuler(0,2,10,0.5)
+
+
+def f(t,y):
+    return y-t**2+1
+def y(t):
+    return (t+1)**2-0.5*2.7**t
+def RungeKutta(a,b,n,o):
+    h=(b-a)/n
+    t=a
+    w=o
+    for i in range(n):
+        i=i+1
+        k1=h*f(t,w)
+        k2=h*f(t+h/2,w+k1/2)
+        k3=h*f(t+h/2,w+k2/2)
+        k4=h*f(t+h,w+k3)
+        
+        w=w+(k1+2*k2+2*k3+k4)/6
+        t=a+i*h
+        print(w)
+RungeKutta(0,2,10,0.5)
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+from tabulate import tabulate
+matriz = [[1,-1,2,-1,-8], [2,-2,3,-3,-20], [1,1,1,0,-2],[1,-1,4,3,4]]
+n=len(matriz)-1 
+
+def suma(i,n,m,k):
+    suma=0
+    for j in range(i,n+1):
+        suma=suma+ m[i-1][j]*k[j]
+    return suma
+
+x=[];y=[]
+for j in range (n+1+1):
+    x.append(0)
+for j in range (n+1+1):
+    y.append(0)
+
+
+for i in range(n):
+    m=-1
+    print(tabulate(matriz))
+    for p in range(n+1):
+        p=n-p
+        if(i<=p):
+            if(matriz[p][i]!=0):
+                m=p    
+    if (m==-1):
+        print("no existe solucion unica")
+        quit()
+    if (m!=i):
+        #cambiar el renglon p por el i y el i por el p
+        for j in range (n+2):
+            x[j]=(matriz[m][j])
+        for j in range (n+2):
+            y[j]=(matriz[i][j])
+        for j in range (n+2):
+            matriz[i][j]=x[j]
+        for j in range (n+2):
+            matriz[m][j]=y[j]
+        print("E",p,"<----->","E",i)
+    for j in range(i+1,n+1):
+        division=matriz[j][i]/matriz[i][i]
+        print("E",i,"--->E",i,"-",[division],"*E",j)
+        for k in range (n+2):
+            matriz[j][k]=matriz[j][k]-division*matriz[i][k]
+print(tabulate(matriz))        
+        #Ej -division*Ei---->Ej
+if(matriz[n][n]==0):
+    print("no existe solucion unica")
+    quit()
+k=[]    
+for i in range (n+1):
+    k.append(0)
+k[n]=(matriz[n][n+1]/matriz[n][n])    
+
+for i in range(n):
+    i=n-1-i
+    k[i]=(matriz[i][n+1]-suma(i+1,n,matriz,k))/(matriz[i][i])
+
+for i in range(n+1):
+    print("x",i,"=",k[i])
